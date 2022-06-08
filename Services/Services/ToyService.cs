@@ -25,15 +25,11 @@ namespace Services.Services
 
         public async Task<ToysModel> GetToyById(int id) =>
          await _context.Toys.FindAsync(id);
-            
-            
-        
+         
         public async Task AddToy(ToysModel toy)
         {
             _context.Toys.Add(toy);
-            await _context.SaveChangesAsync();
-
-           
+            await _context.SaveChangesAsync();    
         }
 
         public async Task<bool> UpdateToy(ToysModel request)

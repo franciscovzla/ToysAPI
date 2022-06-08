@@ -14,16 +14,14 @@ namespace ToysAPI​.Controllers
             _toyService = service;
         }
 
-
-
         [HttpGet]
         [Route("Get")]
         public async Task<ActionResult<IEnumerable<ToysModel>>> GetToys() =>
         Ok(await _toyService.GetToys());
 
 
-        [HttpGet("{id}")]
-
+        [HttpGet]
+        [Route("Get/{id:int:min(0)}")]
         public async Task<IActionResult> GetToyById(int id)
         {
             var Toy = await _toyService.GetToyById(id);
@@ -31,14 +29,12 @@ namespace ToysAPI​.Controllers
             return Toy == null ? NotFound("Toy not found") : Ok(Toy);
         }
 
-
-
-        [HttpPost("Add")]
+        [HttpPost]
+        [Route("Add")]
         public async Task<IActionResult> AddToy(ToysModel toy)
         {
             try
             {
-
                 await _toyService.AddToy(toy);
 
                 return Ok("Toy added succesfully");
@@ -49,7 +45,8 @@ namespace ToysAPI​.Controllers
             }
         }
 
-        [HttpPut("Update")]
+        [HttpPut]
+        [Route("Update")]
         public async Task<IActionResult> UpdateToy(ToysModel toy)
         {
             try
@@ -59,15 +56,11 @@ namespace ToysAPI​.Controllers
                     return Ok("Toy updated succesfully");
                 }
                return StatusCode(404, "Toy not found");
-
-
-            }
+             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
-
-
         }
 
         [HttpDelete]
