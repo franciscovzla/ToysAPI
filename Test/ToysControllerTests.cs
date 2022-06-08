@@ -15,24 +15,12 @@ namespace Test
 {
     public class ToysControllerTests
     {
-        Mock <IToyService> _toysServiceStub = new Mock<IToyService>();
-        private readonly Random rand = new();
-        [Fact]
-        public async Task GetToysWithNoItems()
-        {
-            _toysServiceStub.Setup(service => service.GetToys()).ReturnsAsync(null as ToysModel[]);
-
-          
-            // Act
-            var controller = new ToysController(_toysServiceStub.Object);
-            var result = await controller.GetToys();
-
-            // Assert
-            Assert.IsType<ActionResult<IEnumerable<ToysModel>>>(result);
-        }
+        private Mock <IToyService> _toysServiceStub = new Mock<IToyService>();
+        private Random rand = new();
+       
 
         [Fact]
-        public async Task GetToysReturnsAllItems()
+        public async Task GetToys()
         {
             // Arrange
             var expectedItems = new[] { GenerateRandomObjectForList(), GenerateRandomObjectForList(), GenerateRandomObjectForList() };
@@ -47,22 +35,7 @@ namespace Test
             Assert.IsType<ActionResult<IEnumerable<ToysModel>>>(result);
         }
 
-        [Fact]
-        public async Task AddToy()
-        {
-            // Arrange
-            var invalidModel = GenerateBadRandomObjectWithNoName();
-
-            _toysServiceStub.SetupAdd(service => service.AddToy(invalidModel));
-              
-
-            // Act
-            var controller = new ToysController(_toysServiceStub.Object);
-            var result = await controller.AddToy(invalidModel);
-
-            // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
+       
 
         [Fact]
         public async Task UpdateToy_WithValidModelAndId_ReturnsOk()
@@ -147,17 +120,7 @@ namespace Test
         }
 
 
-        private ToysModel GenerateBadRandomObjectWithNoName()
-        {
-            return new()
-            {
-                Name = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-                AgeRestriction = rand.Next(10),
-                Company = Guid.NewGuid().ToString(),
-                Price = Convert.ToDecimal(rand.NextDouble())
-            };
-        }
+      
 
         private ToysModel GenerateRandomObjectForUpdate()
         {
