@@ -13,6 +13,8 @@ namespace Data.Configurations
     {
         public void Configure (EntityTypeBuilder<ToysModel> builder)
         {
+            builder.HasKey(x => x.Id);
+            builder.Property(x=> x.Name).IsRequired().HasMaxLength(50);
             builder.HasData(GetToys());
         }
 

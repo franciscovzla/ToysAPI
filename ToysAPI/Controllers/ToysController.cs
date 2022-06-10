@@ -16,6 +16,8 @@ namespace ToysAPI​.Controllers
 
         [HttpGet]
         [Route("Get")]
+        //TODO: Lets test with an exception inside GetToys :D 
+        //TODO: Controllers should never return models
         public async Task<ActionResult<IEnumerable<ToysModel>>> GetToys() =>
         Ok(await _toyService.GetToys());
 
@@ -24,9 +26,15 @@ namespace ToysAPI​.Controllers
         [Route("Get/{id:int:min(0)}")]
         public async Task<IActionResult> GetToyById(int id)
         {
+            //TODO: Refactor ternary operator to have 1 line of code instead of 2 
+            //TODO: Controllers should never return models 
+            //Control + K + S   // Surround With
             var Toy = await _toyService.GetToyById(id);
 
             return Toy == null ? NotFound("Toy not found") : Ok(Toy);
+            
+            //return StatusCode(404, "Toy not found");
+            // NotFound("Toy not found") 
         }
 
         [HttpPost]
@@ -47,6 +55,7 @@ namespace ToysAPI​.Controllers
 
         [HttpPut]
         [Route("Update")]
+        //TODO: The controllers should never return Models, Try using DTOs instead
         public async Task<IActionResult> UpdateToy(ToysModel toy)
         {
             try
@@ -65,16 +74,18 @@ namespace ToysAPI​.Controllers
 
         [HttpDelete]
         [Route("{id:int:min(0)}")]
-        public async Task<IActionResult> DeleteToy(int id)
+        public async Task<IActionResult> DeleteToy(int? id)
         {
 
             try
             {
+                //TODO: use a ternary operator 
                 if (await _toyService.DeleteToy(id))
                 {
                     return Ok("Toy deleted succesfully");
                 }
-                return StatusCode(404, "Toy not found");
+                //TODO: Kudos.! This should be returning not found if it is an iD not found
+                return NotFound("Toy not found");
 
             }
             catch (Exception e)

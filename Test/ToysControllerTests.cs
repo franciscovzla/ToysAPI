@@ -41,7 +41,7 @@ namespace Test
         public async Task UpdateToy_WithValidModelAndId_ReturnsOk()
         {
             // Arrange
-            var validModel = GenerateRandomObjectForUpdate();
+            var validModel = GenerateRandomObjectForUpdate(true);
 
             _toysServiceStub.Setup(service => service.UpdateToy(validModel))
                 .ReturnsAsync(true);
@@ -76,7 +76,7 @@ namespace Test
         public async Task DeleteToy_WithValidModelAndId_ReturnsOk()
         {
             // Arrange
-            var validModel = GenerateRandomObjectForUpdate();
+            var validModel = GenerateRandomObjectForUpdate(true);
 
             _toysServiceStub.Setup(service => service.UpdateToy(validModel))
                 .ReturnsAsync(true);
@@ -108,6 +108,7 @@ namespace Test
         }
         private ToysModel GenerateRandomObjectForList()
         {
+            //TODO: It might be worthy to move these random methods to a Fixture
             return new()
             {
                 Id = rand.Next(100),
@@ -120,22 +121,26 @@ namespace Test
         }
 
 
-      
 
-        private ToysModel GenerateRandomObjectForUpdate()
+        //TODO: Whats the difference between this one and the GenerateRandomObjectForList?
+        private ToysModel GenerateRandomObjectForUpdate(bool returnId)
         {
             return new()
             {
-                Id = rand.Next(100),
+                Id = returnId == true ? rand.Next(100) : null,
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 AgeRestriction = rand.Next(10),
-               Company = It.IsAny<string>(),
+                Company = It.IsAny<string>(),
                 Price = Convert.ToDecimal(rand.NextDouble()),
                
             };
         }
 
+
+        //TODO: Same here, if there is a very small difference try using overload or a parameter that set if it should include or not the ID
+
+        //KISS, DRY, YAIGN
         private ToysModel GenerateBadRandomObjectWithNoId()
         {
             return new()

@@ -20,6 +20,8 @@ namespace Test
         private readonly WebApplicationFactory<Program> _factory;
         private readonly Random rnd;
 
+        //TODO: Try creating a Theory with InlineData
+
         public ToysControllerIntegrationTests(ITestOutputHelper outputHelper)
         {
             _outputHelper = outputHelper;
@@ -27,7 +29,7 @@ namespace Test
             rnd = new();
         }
         [Fact]
-       
+
         public async void TestGetToys()
         {
             // Arrange
@@ -46,7 +48,7 @@ namespace Test
         }
 
         [Fact]
-       
+
         public async void TestPostToy()
         {
             // Arrange
@@ -69,7 +71,7 @@ namespace Test
         }
 
         [Fact]
-        
+
         public async void TestPutToy()
         {
             // Arrange
@@ -91,12 +93,14 @@ namespace Test
             _outputHelper.WriteLine(JsonConvert.SerializeObject(responseContent));
         }
 
-        [Fact]
-       
-        public async void TestDeleteToy()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public async void TestDeleteToy(int id)
         {
             // Arrange
-            int id = 4; //Change to a proper existin id, otherwise this will fail.
+            //int id = 4; //Change to a proper existin id, otherwise this will fail.
             var client = _factory.CreateDefaultClient();
 
             // Act

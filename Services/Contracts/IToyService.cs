@@ -10,9 +10,9 @@ namespace Services.Contracts
    public interface IToyService
     {
         Task <ActionResult<IEnumerable<ToysModel>>> GetToys();
-        Task<ToysModel>GetToyById(int id);
+        Task<ToysModel>GetToyById(int? id);
         Task AddToy(ToysModel toy);
         Task<bool> UpdateToy(ToysModel toy);
-        Task<bool> DeleteToy(int id);
+        Task<bool> DeleteToy(int? id);
     }
 }

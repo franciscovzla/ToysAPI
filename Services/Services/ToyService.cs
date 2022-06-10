@@ -20,14 +20,18 @@ namespace Services.Services
             _context = context;
         }
        
+        //TODO: Test with no toys
         public async Task<ActionResult<IEnumerable<ToysModel>>> GetToys() =>
             await _context.Toys.ToListAsync();
 
-        public async Task<ToysModel> GetToyById(int id) =>
+        //TODO: Find will throw an exception if the Id doesnt exist, you can use FirstOrDefault
+        //https://arwsoftware.wordpress.com/2017/02/04/entity-framework-find-vs-firstordefault/
+        public async Task<ToysModel> GetToyById(int? id) =>
          await _context.Toys.FindAsync(id);
          
         public async Task AddToy(ToysModel toy)
         {
+            //TODO: Same, error not being validated
             _context.Toys.Add(toy);
             await _context.SaveChangesAsync();    
         }
@@ -40,6 +44,7 @@ namespace Services.Services
                 return false;
             }
 
+            //TODO: Try to use Automapper instead
             Toy.Name = request.Name;
             Toy.Description = request.Description;
             Toy.AgeRestriction = request.AgeRestriction;
@@ -52,8 +57,9 @@ namespace Services.Services
             return true;
         }
 
-        public async Task<bool> DeleteToy(int id)
+        public async Task<bool> DeleteToy(int? id)
         {
+            //TODO: Same here The find might cause exceptions if the ID is not found
             var Toy = await _context.Toys.FindAsync(id);
             if (Toy is null)
             {
