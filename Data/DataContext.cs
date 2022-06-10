@@ -8,7 +8,7 @@ namespace Data
     {
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-
+        
         public DbSet<ToysModel> Toys { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
