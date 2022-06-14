@@ -4,7 +4,7 @@ using Models;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using System.Data.Entity;
+
 
 namespace Services.Services
 {
@@ -54,7 +54,7 @@ namespace Services.Services
                 {
                     return false;
                 }
-                _mapper.Map(Toy, request);
+                _mapper.Map(request, Toy);
                 await _context.SaveChangesAsync();
                 return true;
             }
