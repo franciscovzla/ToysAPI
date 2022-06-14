@@ -10,20 +10,20 @@ using Services.Contracts;
 using Models;
 using ToysAPI.Controllers;
 using System.Collections;
-
+using Services.DTO;
 namespace Test
 {
     public class ToysControllerTests
     {
-        private Mock <IToyService> _toysServiceStub = new Mock<IToyService>();
+        private Mock<IToyService> _toysServiceStub = new Mock<IToyService>();
         private Random rand = new();
-       
+
 
         [Fact]
         public async Task GetToys()
         {
             // Arrange
-            var expectedItems = new[] { GenerateRandomObjectForList(), GenerateRandomObjectForList(), GenerateRandomObjectForList() };
+            var expectedItems = GenerateRandomObjectForList();
 
             _toysServiceStub.Setup(service => service.GetToys())
                 .ReturnsAsync(expectedItems);
@@ -32,16 +32,16 @@ namespace Test
             var result = await controller.GetToys();
 
             // Assert
-            Assert.IsType<ActionResult<IEnumerable<ToysModel>>>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
-       
+
 
         [Fact]
         public async Task UpdateToy_WithValidModelAndId_ReturnsOk()
         {
             // Arrange
-            var validModel = GenerateRandomObjectForUpdate(true);
+            var validModel = GenerateRandomObject(true);
 
             _toysServiceStub.Setup(service => service.UpdateToy(validModel))
                 .ReturnsAsync(true);
@@ -59,7 +59,7 @@ namespace Test
         public async Task UpdateToy_WithNoId_ReturnsNotFound()
         {
             // Arrange
-            var invalidModel = GenerateBadRandomObjectWithNoId();
+            var invalidModel = GenerateRandomObject(false);
 
             _toysServiceStub.Setup(service => service.UpdateToy(invalidModel))
                 .ReturnsAsync(false);
@@ -76,7 +76,7 @@ namespace Test
         public async Task DeleteToy_WithValidModelAndId_ReturnsOk()
         {
             // Arrange
-            var validModel = GenerateRandomObjectForUpdate(true);
+            var validModel = GenerateRandomObject(true);
 
             _toysServiceStub.Setup(service => service.UpdateToy(validModel))
                 .ReturnsAsync(true);
@@ -94,7 +94,7 @@ namespace Test
         public async Task DeleteToy_WithNoId_ReturnsNotFound()
         {
             // Arrange
-            var invalidModel = GenerateBadRandomObjectWithNoId();
+            var invalidModel = GenerateRandomObject(false);
 
             _toysServiceStub.Setup(service => service.DeleteToy(invalidModel.Id))
                 .ReturnsAsync(false);
@@ -104,53 +104,37 @@ namespace Test
             var result = await controller.DeleteToy(invalidModel.Id);
 
             // Assert
-            Assert.IsType<ObjectResult>(result);
-        }
-        private ToysModel GenerateRandomObjectForList()
-        {
-            //TODO: It might be worthy to move these random methods to a Fixture
-            return new()
-            {
-                Id = rand.Next(100),
-                Name = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-                AgeRestriction = rand.Next(10),
-                Company = It.IsAny<string>(),
-                Price = Convert.ToDecimal(rand.NextDouble())
-            };
+            Assert.IsType<NotFoundObjectResult>(result);
         }
 
 
 
-        //TODO: Whats the difference between this one and the GenerateRandomObjectForList?
-        private ToysModel GenerateRandomObjectForUpdate(bool returnId)
-        {
-            return new()
+      
+        private ToysDTO GenerateRandomObject(bool returnId) =>
+            new()
             {
                 Id = returnId == true ? rand.Next(100) : null,
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 AgeRestriction = rand.Next(10),
-                Company = It.IsAny<string>(),
+                CompanyId = rand.Next(10),
                 Price = Convert.ToDecimal(rand.NextDouble()),
-               
+
             };
-        }
 
-
-        //TODO: Same here, if there is a very small difference try using overload or a parameter that set if it should include or not the ID
-
-        //KISS, DRY, YAIGN
-        private ToysModel GenerateBadRandomObjectWithNoId()
-        {
-            return new()
+        private List<ToysViewModel> GenerateRandomObjectForList() =>
+            new()
             {
-                Name = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-                AgeRestriction = rand.Next(10),
-                Company = It.IsAny<string>(),
-                Price = Convert.ToDecimal(rand.NextDouble())
+                new()
+                {
+                    Id = rand.Next(100),
+                    Name = Guid.NewGuid().ToString(),
+                    Description = Guid.NewGuid().ToString(),
+                    AgeRestriction = rand.Next(10),
+                    CompanyId = rand.Next(10),
+                    Price = Convert.ToDecimal(rand.NextDouble()),
+
+                }
             };
-        }
     }
 }

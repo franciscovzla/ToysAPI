@@ -1,4 +1,5 @@
 ﻿using Services.Contracts;
+using Services.DTO;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -9,70 +10,167 @@ using Microsoft.AspNetCore.Mvc;
 using System.Web.Mvc;
 using Data;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using System.Data.Entity;
 
 namespace Services.Services
 {
     public class ToyService : IToyService
     {
         private readonly DataContext _context;
-        public ToyService(DataContext context)
+        private readonly IMapper _mapper;
+        public ToyService(DataContext context, IMapper mapper)
         {
             _context = context;
-        }
-       
-        //TODO: Test with no toys
-        public async Task<ActionResult<IEnumerable<ToysModel>>> GetToys() =>
-            await _context.Toys.ToListAsync();
-
-        //TODO: Find will throw an exception if the Id doesnt exist, you can use FirstOrDefault
-        //https://arwsoftware.wordpress.com/2017/02/04/entity-framework-find-vs-firstordefault/
-        public async Task<ToysModel> GetToyById(int? id) =>
-         await _context.Toys.FindAsync(id);
-         
-        public async Task AddToy(ToysModel toy)
-        {
-            //TODO: Same, error not being validated
-            _context.Toys.Add(toy);
-            await _context.SaveChangesAsync();    
+            _mapper = mapper;
         }
 
-        public async Task<bool> UpdateToy(ToysModel request)
+        public async Task<List<ToysViewModel>> GetToys()
         {
-            var Toy = await _context.Toys.FindAsync(request.Id);
-            if (Toy is null)
+            return _context.Toys.ToList().Select(x => _mapper.Map<Toys, ToysViewModel>(x)).ToList();
+        }
+
+            //    List <ToysViewModel> toys = _context.Toys.ToListAsync();
+            //    return _mapper.Map<ToysViewModel>(toys);
+            //}
+            //_context.Toys
+            //.Select(x => new ToysViewModel
+            //{
+            //    Id = x.Id,
+            //    Name = x.Name,
+            //    Description = x.Description,
+            //    AgeRestriction = x.AgeRestriction,
+            //    CompanyId = x.CompanyId,
+            //    Price = x.Price
+            //})
+            //.ToListAsync();
+
+
+
+        public async Task<ToysViewModel?> GetToyById(int? id)
+        {
+            var Toy = await _context.Toys.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<ToysViewModel>(Toy);
+
+        }
+
+
+        //_context.Toys
+        //  .Select(x => new ToysViewModel
+        //  {
+        //      Id = id,
+        //      Name = x.Name,
+        //      Description = x.Description,
+        //      AgeRestriction = x.AgeRestriction,
+        //      CompanyId = x.CompanyId,
+        //      Price = x.Price
+        //  })
+        //  .FirstOrDefaultAsync(x => x.Id == id);
+
+
+
+        public async Task AddToy(ToysDTO toy)
+        {
+            try
             {
-                return false;
+                _context.Add(_mapper.Map<Toys>(toy));
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Toy could not been added {ex}");
             }
 
-            //TODO: Try to use Automapper instead
-            Toy.Name = request.Name;
-            Toy.Description = request.Description;
-            Toy.AgeRestriction = request.AgeRestriction;
-            Toy.Company = request.Company;
-            Toy.Price = request.Price;
+            //    try
+            //    {
+            //        var newToy = new Toys
+
+            //        {
+            //            Name = toy.Name,
+            //            Description = toy.Description,
+            //            AgeRestriction = toy.AgeRestriction,
+            //            CompanyId = toy.CompanyId,
+            //            Price = toy.Price
+            //        };
+            //        _context.Toys.Add(newToy);
+            //        await _context.SaveChangesAsync();
+            //    }
+            //    catch (Exception)
+            //    {
+
+            //        throw new Exception("Toy could not been added");
+            //    }
+        }
+
+        public async Task<bool> UpdateToy(ToysDTO request)
+        {
+            try
+            {
+                var Toy = await _context.Toys.FirstOrDefaultAsync(x => x.Id == request.Id);
+                if (Toy is null)
+                {
+                    return false;
+                }
+                _mapper.Map(Toy, request);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Toy could not been modified {ex}");
+            }
+            //try
+            //{
+            //    var Toy = await _context.Toys.FirstOrDefaultAsync(x => x.Id == request.Id);
+            //    if (Toy is null)
+            //    {
+            //        return false;
+            //    }
+
+            //    //TODO: Try to use Automapper instead
+            //    Toy.Name = request.Name;
+            //    Toy.Description = request.Description;
+            //    Toy.AgeRestriction = request.AgeRestriction;
+            //    Toy.CompanyId = request.CompanyId;
+            //    Toy.Price = request.Price;
 
 
-            await _context.SaveChangesAsync();
+            //    await _context.SaveChangesAsync();
 
-            return true;
+            //    return true;
+            //}
+            //catch (Exception)
+            //{
+
+            //    throw new Exception("Toy could not been modified");
+            //}
         }
 
         public async Task<bool> DeleteToy(int? id)
         {
-            //TODO: Same here The find might cause exceptions if the ID is not found
-            var Toy = await _context.Toys.FindAsync(id);
-            if (Toy is null)
+            try
             {
-                return false;
-            }
-                
 
-            _context.Remove(Toy);
-            await _context.SaveChangesAsync();
-            return true;
+                var Toy = await _context.Toys.FirstOrDefaultAsync(x => x.Id == id);
+                if (Toy is null)
+                {
+                    return false;
+                }
+
+
+                _context.Remove(Toy);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Toy could not been deleted {ex}");
+            }
         }
     }
 
-    }
+}
 
 

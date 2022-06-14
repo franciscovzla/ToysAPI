@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using ToysAPI;
 using System.Net;
 using Newtonsoft.Json;
-using Models;
 using System.Net.Http.Headers;
+using Services.DTO;
 
 namespace Test
 {
@@ -20,7 +16,7 @@ namespace Test
         private readonly WebApplicationFactory<Program> _factory;
         private readonly Random rnd;
 
-        //TODO: Try creating a Theory with InlineData
+
 
         public ToysControllerIntegrationTests(ITestOutputHelper outputHelper)
         {
@@ -53,7 +49,7 @@ namespace Test
         {
             // Arrange
             var client = _factory.CreateDefaultClient();
-            var toy = new ToysModel { Name = "New toy", Description = "This is a toy", Company = "Toy company", AgeRestriction = 5, Price = rnd.Next(50) };
+            var toy = new ToysDTO { Name = "New toy", Description = "This is a toy", CompanyId = 1, AgeRestriction = 5, Price = rnd.Next(50) };
 
             HttpContent httpContent = new StringContent(JsonConvert.SerializeObject(toy), Encoding.UTF8);
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -76,7 +72,7 @@ namespace Test
         {
             // Arrange
             var client = _factory.CreateDefaultClient();
-            var toy = new ToysModel() { Id = 2, Name = "Updated toy", Description = "This is a updated toy", Company = "Toy company", AgeRestriction = 5, Price = 10 };
+            var toy = new ToysDTO() { Id = 6, Name = "Updated toy", Description = "This is a updated toy", AgeRestriction = 5, CompanyId = 1, Price = 10 };
 
             HttpContent httpContent = new StringContent(JsonConvert.SerializeObject(toy), Encoding.UTF8);
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");

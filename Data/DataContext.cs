@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
 using Data.Configurations;
+using Data.Extensions;
 
 namespace Data
 {
@@ -9,12 +10,12 @@ namespace Data
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         
-        public DbSet<ToysModel> Toys { get; set; }
-
+        public DbSet<Toys> Toys { get; set; }
+        public DbSet<Company> Companies { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //TODO: Super nice to have - Lets use another approach to apply all the configurations 
-            modelBuilder.ApplyConfiguration(new ToysConfig());
+            
+            modelBuilder.ApplyCustomConfigurations();
         }
     }
 

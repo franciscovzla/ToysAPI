@@ -5,13 +5,13 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToysAPI", "ToysAPI\ToysAPI.csproj", "{E4954E92-150E-449A-8B84-3952AF389560}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{58D1BBF6-CDDA-4D63-8173-3B6B8742C4C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToysAPI.Models", "Models\ToysAPI.Models.csproj", "{58D1BBF6-CDDA-4D63-8173-3B6B8742C4C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{547D0B2F-6E27-4979-AD76-4B1CB371EFC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToysAPI.Data", "Data\ToysAPI.Data.csproj", "{547D0B2F-6E27-4979-AD76-4B1CB371EFC0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{BC6DDD54-DAFC-465A-A5DD-A50337B13EF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToysAPI.Services", "Services\ToysAPI.Services.csproj", "{BC6DDD54-DAFC-465A-A5DD-A50337B13EF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{03DF44B6-E926-4C73-AF79-FC968DE84222}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToysAPI.Test", "Test\ToysAPI.Test.csproj", "{03DF44B6-E926-4C73-AF79-FC968DE84222}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

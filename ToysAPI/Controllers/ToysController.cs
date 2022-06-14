@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services.Contracts;
+using Services.DTO;
 namespace ToysAPI​.Controllers
 {
     [Route("api/[controller]")]
@@ -16,30 +17,25 @@ namespace ToysAPI​.Controllers
 
         [HttpGet]
         [Route("Get")]
-        //TODO: Lets test with an exception inside GetToys :D 
-        //TODO: Controllers should never return models
-        public async Task<ActionResult<IEnumerable<ToysModel>>> GetToys() =>
-        Ok(await _toyService.GetToys());
+
+        public async Task<ActionResult> GetToys() =>
+            Ok(await _toyService.GetToys());
 
 
         [HttpGet]
         [Route("Get/{id:int:min(0)}")]
         public async Task<IActionResult> GetToyById(int id)
         {
-            //TODO: Refactor ternary operator to have 1 line of code instead of 2 
-            //TODO: Controllers should never return models 
-            //Control + K + S   // Surround With
+
             var Toy = await _toyService.GetToyById(id);
 
-            return Toy == null ? NotFound("Toy not found") : Ok(Toy);
-            
-            //return StatusCode(404, "Toy not found");
-            // NotFound("Toy not found") 
+            return Toy is null ? NotFound("Toy not found") : Ok(Toy);
+
         }
 
         [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> AddToy(ToysModel toy)
+        public async Task<IActionResult> AddToy(ToysDTO toy)
         {
             try
             {
@@ -55,8 +51,8 @@ namespace ToysAPI​.Controllers
 
         [HttpPut]
         [Route("Update")]
-        //TODO: The controllers should never return Models, Try using DTOs instead
-        public async Task<IActionResult> UpdateToy(ToysModel toy)
+       
+        public async Task<IActionResult> UpdateToy(ToysDTO toy)
         {
             try
             {
@@ -64,8 +60,8 @@ namespace ToysAPI​.Controllers
                 {
                     return Ok("Toy updated succesfully");
                 }
-               return StatusCode(404, "Toy not found");
-             }
+                return StatusCode(404, "Toy not found");
+            }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
@@ -79,13 +75,8 @@ namespace ToysAPI​.Controllers
 
             try
             {
-                //TODO: use a ternary operator 
-                if (await _toyService.DeleteToy(id))
-                {
-                    return Ok("Toy deleted succesfully");
-                }
-                //TODO: Kudos.! This should be returning not found if it is an iD not found
-                return NotFound("Toy not found");
+
+                return await _toyService.DeleteToy(id) ? Ok("Toy deleted succesfully") : NotFound("Toy not found");
 
             }
             catch (Exception e)

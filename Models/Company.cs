@@ -10,5 +10,7 @@ namespace Models
     {
         public int Id { get; set; }
         public string? Name { get; set; }
+
+        public virtual ICollection<Toys> Toys { get; set; }
     }
 }
